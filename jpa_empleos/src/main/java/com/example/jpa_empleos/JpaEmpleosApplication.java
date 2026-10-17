@@ -21,7 +21,7 @@ public class JpaEmpleosApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		eliminar();
+		mostrarTodos();
 	}
 
 	/** * Método deleteById(borrar) - Interfaz CrudRepository */
@@ -65,4 +65,25 @@ public class JpaEmpleosApplication implements CommandLineRunner {
 		categoriasRepo.save(nuevaCategoria);
 		System.out.println(nuevaCategoria);
 	}
+	/** Método findAll - Interfaz CrudRepository */
+private void mostrarTodos() {
+    System.out.println("===== LISTA DE CATEGORÍAS =====");
+
+    Iterable<Categoria> categorias = categoriasRepo.findAll();
+
+    boolean hayRegistros = false;
+
+    for (Categoria categoria : categorias) {
+        hayRegistros = true;
+
+        System.out.println("ID: " + categoria.getId());
+        System.out.println("Nombre: " + categoria.getNombre());
+        System.out.println("Descripción: " + categoria.getDescripcion());
+        System.out.println("------------------------------");
+    }
+
+    if (!hayRegistros) {
+        System.out.println("No hay categorías registradas.");
+    }
+}
 }
