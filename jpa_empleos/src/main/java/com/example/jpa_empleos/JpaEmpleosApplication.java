@@ -1,5 +1,5 @@
 package com.example.jpa_empleos;
-
+import org.springframework.data.domain.Sort;
 import com.example.jpa_empleos.models.Categoria;
 import com.example.jpa_empleos.repository.CategoriasJPARepository;
 import org.springframework.boot.CommandLineRunner;
@@ -23,19 +23,29 @@ public class JpaEmpleosApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        borrarTodasEnBloque();
-        System.out.println("Todas las categorías fueron eliminadas.");
-        buscarTodasJPA();
-    }
+public void run(String... args) throws Exception {
+    buscarTodosOrdenados();
+}
 
     /**
-     * Método deleteAllInBatch - Interfaz JpaRepository.
-     * Usar con precaución: elimina todos los registros.
-     */
-    private void borrarTodasEnBloque() {
-        categoriasJPARepo.deleteAllInBatch();
+ * Método findAll con ordenamiento descendente por nombre.
+ */
+private void buscarTodosOrdenados() {
+    List<Categoria> categorias =
+            categoriasJPARepo.findAll(Sort.by("nombre").descending());
+
+    if (categorias.isEmpty()) {
+        System.out.println("No hay categorías registradas.");
+        return;
     }
+
+    System.out.println("=== CATEGORÍAS ORDENADAS POR NOMBRE (Z-A) ===");
+
+    for (Categoria categoria : categorias) {
+        System.out.println(
+                categoria.getId() + " " + categoria.getNombre());
+    }
+}
 
     /** Método findAll - Interfaz JpaRepository */
     private void buscarTodasJPA() {
