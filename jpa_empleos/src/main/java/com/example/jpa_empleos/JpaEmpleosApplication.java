@@ -12,7 +12,10 @@ import com.example.jpa_empleos.repository.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.example.jpa_empleos.models.Usuario;
+import com.example.jpa_empleos.models.Perfil;
 
+import java.util.Optional;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -42,10 +45,10 @@ public class JpaEmpleosApplication implements CommandLineRunner {
         SpringApplication.run(JpaEmpleosApplication.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        crearUsuarioConPerfiles();
-    }
+   @Override
+public void run(String... args) throws Exception {
+    buscarUsuario();
+}
 
     /**
      * Crear usuario con los perfiles ADMINISTRADOR y USUARIO.
@@ -110,4 +113,30 @@ public class JpaEmpleosApplication implements CommandLineRunner {
             System.out.println("- " + perfil.getPerfil());
         }
     }
+	
+/**
+ * Busca un usuario y muestra sus perfiles asociados.
+ */
+private void buscarUsuario() {
+    Optional<Usuario> usuarioOptional = usuarioRepo.findById(1);
+
+    if (usuarioOptional.isPresent()) {
+        Usuario usuario = usuarioOptional.get();
+
+        System.out.println("===== USUARIO ENCONTRADO =====");
+        System.out.println("ID: " + usuario.getId());
+        System.out.println("Nombre: " + usuario.getNombre());
+        System.out.println("Username: " + usuario.getUsername());
+
+        System.out.println("Perfiles asignados:");
+
+        for (Perfil perfil : usuario.getPerfiles()) {
+            System.out.println("- " + perfil.getPerfil());
+        }
+
+    } else {
+        System.out.println("No existe un usuario con ID 1.");
+    }
+}
+
 }
