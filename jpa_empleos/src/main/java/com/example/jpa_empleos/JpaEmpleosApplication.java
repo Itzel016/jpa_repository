@@ -30,22 +30,28 @@ public class JpaEmpleosApplication implements CommandLineRunner {
     }
 
     /**
-     * Método findAll - Interfaz JpaRepository
-     * Recupera todas las vacantes registradas.
+     * Recuperar todas las vacantes y sus categorías.
      */
     private void buscarVacantes() {
         List<Vacante> vacantes = vacantesRepo.findAll();
-
-        System.out.println("===== LISTA DE VACANTES =====");
 
         if (vacantes.isEmpty()) {
             System.out.println("No hay vacantes registradas.");
             return;
         }
 
+        System.out.println("===== VACANTES Y SUS CATEGORÍAS =====");
+
         for (Vacante vacante : vacantes) {
+            String nombreCategoria =
+                    vacante.getCategoria() != null
+                            ? vacante.getCategoria().getNombre()
+                            : "Sin categoría";
+
             System.out.println(
-                vacante.getId() + ". " + vacante.getNombre()
+                    vacante.getId() + ". "
+                    + vacante.getNombre()
+                    + " -> " + nombreCategoria
             );
         }
     }
