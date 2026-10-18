@@ -1,23 +1,34 @@
-
 package com.example.jpa_empleos;
 
-import com.example.jpa_empleos.models.Vacante;
+
+import com.example.jpa_empleos.models.Perfil;
+import com.example.jpa_empleos.repository.PerfilesRepository;
+import com.example.jpa_empleos.repository.UsuarioRepository;
 import com.example.jpa_empleos.repository.VacantesRepository;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @SpringBootApplication
 public class JpaEmpleosApplication implements CommandLineRunner {
 
     private final VacantesRepository vacantesRepo;
+    private final PerfilesRepository perfilesRepo;
+    private final UsuarioRepository usuarioRepo;
 
-    // Inyección del repositorio
-    public JpaEmpleosApplication(VacantesRepository vacantesRepo) {
+    // Inyección de los repositorios
+    public JpaEmpleosApplication(
+            VacantesRepository vacantesRepo,
+            PerfilesRepository perfilesRepo,
+            UsuarioRepository usuarioRepo) {
+
         this.vacantesRepo = vacantesRepo;
+        this.perfilesRepo = perfilesRepo;
+        this.usuarioRepo = usuarioRepo;
     }
 
     public static void main(String[] args) {
@@ -26,29 +37,58 @@ public class JpaEmpleosApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        buscarVacantes();
+        crearPerfiles();
     }
 
     /**
-     * Mostrar todas las vacantes registradas.
+     * Guarda los perfiles en la base de datos.
      */
-    private void buscarVacantes() {
-        List<Vacante> vacantes = vacantesRepo.findAll();
+    private void crearPerfiles() {
+        List<Perfil> perfiles = obtenerPerfiles();
 
-        System.out.println("===== LISTA DE VACANTES =====");
+        // Evitar insertar perfiles que ya existen
+        List<Perfil> existentes = perfilesRepo.findAll();
+        List<Perfil> nuevos = new LinkedList<>();
 
-        if (vacantes.isEmpty()) {
-            System.out.println("No hay vacantes registradas.");
-            return;
+        for (Perfil perfil : perfiles) {
+            boolean existe = existentes.stream()
+                    .anyMatch(p -> perfil.getPerfil().equals(p.getPerfil()));
+
+            if (!existe) {
+                nuevos.add(perfil);
+            }
         }
 
-        for (Vacante vacante : vacantes) {
-            System.out.println(
-                "ID: " + vacante.getId()
-                + " | Nombre: " + vacante.getNombre()
-            );
+        if (!nuevos.isEmpty()) {
+            perfilesRepo.saveAll(nuevos);
+            System.out.println("Perfiles guardados correctamente:");
+            for (Perfil perfil : nuevos) {
+                System.out.println(perfil.getPerfil());
+            }
+        } else {
+            System.out.println("Los tres perfiles ya están registrados.");
         }
+    }
 
-        System.out.println("Total de vacantes: " + vacantes.size());
+    /**
+     * Crea la lista de perfiles de la aplicación.
+     */
+    private List<Perfil> obtenerPerfiles() {
+        List<Perfil> perfiles = new LinkedList<>();
+
+        Perfil perfil1 = new Perfil();
+        perfil1.setPerfil("SUPERVISOR");
+
+        Perfil perfil2 = new Perfil();
+        perfil2.setPerfil("ADMINISTRADOR");
+
+        Perfil perfil3 = new Perfil();
+        perfil3.setPerfil("USUARIO");
+
+        perfiles.add(perfil1);
+        perfiles.add(perfil2);
+        perfiles.add(perfil3);
+
+        return perfiles;
     }
 }
