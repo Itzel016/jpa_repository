@@ -26,9 +26,9 @@ public class JpaEmpleosApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        buscarVacantesPorEstatus();
-    }
+public void run(String... args) throws Exception {
+    buscarVacantesPorDestacadoEstatus();
+}
 
     /**
      * Query Method: Buscar vacantes por estatus.
@@ -50,4 +50,32 @@ public class JpaEmpleosApplication implements CommandLineRunner {
             );
         }
     }
+	
+/**
+ * Query Method: Buscar vacantes por destacado y estatus,
+ * ordenadas por ID descendente.
+ */
+private void buscarVacantesPorDestacadoEstatus() {
+
+    List<Vacante> vacantesAprobadasYDestacadas =
+            vacantesRepo.findByDestacadoAndEstatusOrderByIdDesc(
+                    1,
+                    EstatusVacante.Aprobada
+            );
+
+    System.out.println(
+            "Registros encontrados: "
+                    + vacantesAprobadasYDestacadas.size()
+    );
+
+    for (Vacante vacante : vacantesAprobadasYDestacadas) {
+        System.out.println(
+                "ID: " + vacante.getId()
+                + " | Nombre: " + vacante.getNombre()
+                + " | Estatus: " + vacante.getEstatus()
+                + " | Destacada: " + vacante.getDestacado()
+        );
+    }
+}
+
 }
