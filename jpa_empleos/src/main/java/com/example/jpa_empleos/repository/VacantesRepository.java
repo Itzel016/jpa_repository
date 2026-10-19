@@ -1,10 +1,9 @@
-
 package com.example.jpa_empleos.repository;
 
 import com.example.jpa_empleos.models.EstatusVacante;
 import com.example.jpa_empleos.models.Vacante;
-
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 
 public interface VacantesRepository
@@ -13,19 +12,14 @@ public interface VacantesRepository
     List<Vacante> findByEstatus(EstatusVacante estatus);
 
     List<Vacante> findByDestacadoAndEstatusOrderByIdDesc(
-            int destacado,
-            EstatusVacante estatus
-    );
+            int destacado, EstatusVacante estatus);
 
-    // Buscar vacantes por rango de salarios
     List<Vacante> findBySalarioBetween(
-            Double salarioInicial,
-            Double salarioFinal
-    );
+            Double salarioInicial, Double salarioFinal);
 
-    // Buscar vacantes por rango de salarios, de mayor a menor
     List<Vacante> findBySalarioBetweenOrderBySalarioDesc(
-            Double salarioInicial,
-            Double salarioFinal
-    );
+            Double salarioInicial, Double salarioFinal);
+
+    // Buscar vacantes por una lista de estatus
+    List<Vacante> findByEstatusIn(EstatusVacante[] listaEstatus);
 }
