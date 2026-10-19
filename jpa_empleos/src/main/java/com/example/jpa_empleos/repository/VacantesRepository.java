@@ -1,5 +1,4 @@
 
-
 package com.example.jpa_empleos.repository;
 
 import com.example.jpa_empleos.models.EstatusVacante;
@@ -11,13 +10,22 @@ import java.util.List;
 public interface VacantesRepository
         extends JpaRepository<Vacante, Integer> {
 
-    // Buscar vacantes por estatus
     List<Vacante> findByEstatus(EstatusVacante estatus);
 
-    // Buscar vacantes por destacado y estatus,
-    // ordenadas por ID descendente
     List<Vacante> findByDestacadoAndEstatusOrderByIdDesc(
             int destacado,
             EstatusVacante estatus
+    );
+
+    // Buscar vacantes por rango de salarios
+    List<Vacante> findBySalarioBetween(
+            Double salarioInicial,
+            Double salarioFinal
+    );
+
+    // Buscar vacantes por rango de salarios, de mayor a menor
+    List<Vacante> findBySalarioBetweenOrderBySalarioDesc(
+            Double salarioInicial,
+            Double salarioFinal
     );
 }
